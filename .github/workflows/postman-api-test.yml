@@ -32,11 +32,12 @@ jobs:
           REPORT_NAME="Postman-Report-${TIMESTAMP}.html"
           
           set +e
-          # แก้ไขชื่อไฟล์ตามที่คุณระบุ (ตรวจสอบ Path โฟลเดอร์ให้ถูกต้อง)
-          newman run "postman/Automate Test - T.T. Software Solution.postman_collection" \
-            -e "postman/reqres-api.postman_environment" \
+          # รัน Newman โดยชี้ไปที่ไฟล์ในโฟลเดอร์ postman-tests (ตามที่เห็นจาก path CMD ของคุณ)
+          newman run "postman-tests/AutomateTest_postman_collection.json" \
+            -e "postman-tests/reqres-api.postman_environment.json" \
             -r htmlextra \
             --reporter-htmlextra-export "${REPORT_NAME}"
+          
           CODE=$?
           set -e
 
