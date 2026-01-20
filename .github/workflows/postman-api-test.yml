@@ -1,0 +1,58 @@
+name: API Automated Testing (Postman)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  newman-api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Newman and Reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+
+      - name: Run API Tests with Newman
+        id: run-newman
+        run: |
+          set -x
+          echo "📌 Starting Newman test..."
+          TIMESTAMP=$(date +'%Y-%m-%d-%H-%M-%S')
+          REPORT_NAME="Postman-Report-${TIMESTAMP}.html"
+          
+          set +e
+          # แก้ไขชื่อไฟล์ตามที่คุณระบุ (ตรวจสอบ Path โฟลเดอร์ให้ถูกต้อง)
+          newman run "postman/Automate Test - T.T. Software Solution.postman_collection" \
+            -e "postman/reqres-api.postman_environment" \
+            -r htmlextra \
+            --reporter-htmlextra-export "${REPORT_NAME}"
+          CODE=$?
+          set -e
+
+          echo "report_name=${REPORT_NAME}" >> $GITHUB_OUTPUT
+          echo "exit_code=${CODE}" >> $GITHUB_OUTPUT
+          exit 0
+
+      - name: Upload Postman Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-html-report
+          path: ${{ steps.run-newman.outputs.report_name }}
+
+      - name: Fail job if Newman failed
+        if: ${{ steps.run-newman.outputs.exit_code != '0' }}
+        run: |
+          echo "❌ Newman tests failed. Failing the job."
+          exit 1
