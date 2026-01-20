@@ -25,10 +25,10 @@ async function updateSheet() {
         minute: '2-digit',
         second: '2-digit',
         hour12: false,
-        timeZone: 'Asia/Bangkok' // เพิ่มบรรทัดนี้เพื่อแก้ปัญหาเวลาไม่ตรง
+        timeZone: 'Asia/Bangkok'
     });
 
-    console.log(`🚀 Update Time (Asia/Bangkok): ${formattedDate}`);
+    // console.log(`🚀 Update Time (Asia/Bangkok): ${formattedDate}`);
 
     for (let row of rows) {
         row.set('Test Date', formattedDate);
