@@ -37,6 +37,7 @@ async function updateSheet() {
         await row.save();
     }
     console.log(`✅ Updated ${tool} status and Test Date in Google Sheets`);
+    console.log(`✅ Updated ${status} status  in Google Sheets`)
 }
 
 updateSheet().catch(err => {
