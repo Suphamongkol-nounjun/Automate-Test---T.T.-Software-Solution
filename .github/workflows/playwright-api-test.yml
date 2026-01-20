@@ -47,7 +47,6 @@ jobs:
         GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
         GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
         TEST_TOOL: 'Playwright'
-        # เช็ค exit_code: ถ้าเป็น 0 ให้ส่ง Pass ถ้าไม่ใช่ให้ส่ง Fail
         TEST_STATUS: ${{ steps.run-playwright.outputs.exit_code == '0' && 'Pass' || 'Fail' }}
       run: |
         npm install google-spreadsheet google-auth-library

@@ -23,8 +23,12 @@ async function updateSheet() {
         day: '2-digit', 
         hour: '2-digit', 
         minute: '2-digit',
-        hour12: false 
+        second: '2-digit',
+        hour12: false,
+        timeZone: 'Asia/Bangkok' // เพิ่มบรรทัดนี้เพื่อแก้ปัญหาเวลาไม่ตรง
     });
+
+    console.log(`🚀 Update Time (Asia/Bangkok): ${formattedDate}`);
 
     for (let row of rows) {
         row.set('Test Date', formattedDate);
@@ -36,8 +40,8 @@ async function updateSheet() {
         }
         await row.save();
     }
-    console.log(`✅ Updated ${tool} status and Test Date in Google Sheets`);
-    console.log(`✅ Updated ${status} status  in Google Sheets`)
+    // console.log(`✅ Updated ${tool} status and Test Date in Google Sheets`);
+    // console.log(`✅ Updated ${status} status  in Google Sheets`)
 }
 
 updateSheet().catch(err => {
