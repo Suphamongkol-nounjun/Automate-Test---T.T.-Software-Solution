@@ -49,3 +49,16 @@ jobs:
         run: |
           echo "❌ Newman tests failed with exit code ${{ steps.run-newman.outputs.exit_code }}"
           exit 1
+
+      - name: Update Google Sheets
+        if: always() # ให้รันเสมอไม่ว่าเทสจะผ่านหรือตก
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          TEST_TOOL: 'Newman'
+          # เช็คค่า exit_code ถ้าเป็น 0 คือ Pass นอกนั้นคือ Fail
+          TEST_STATUS: ${{ steps.run-newman.outputs.exit_code == '0' && 'Pass' || 'Fail' }}
+        run: |
+          npm install google-spreadsheet google-auth-library
+          node update_sheets.js

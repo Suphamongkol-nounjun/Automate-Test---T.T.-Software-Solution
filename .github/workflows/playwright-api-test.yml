@@ -39,3 +39,16 @@ jobs:
         name: playwright-report
         path: playwright-tests/playwright-report/
         retention-days: 30
+        
+    - name: Update Google Sheets
+      if: always()
+      env:
+        GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+        GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+        GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+        TEST_TOOL: 'Playwright'
+        # outcome จะบอกว่าขั้นตอนก่อนหน้าสำเร็จหรือไม่ (success/failure)
+        TEST_STATUS: ${{ steps.run-playwright.outcome == 'success' && 'Pass' || 'Fail' }}
+      run: |
+        npm install google-spreadsheet google-auth-library
+        node update_sheets.js
