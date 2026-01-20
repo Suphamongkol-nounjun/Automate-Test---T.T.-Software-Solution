@@ -20,30 +20,22 @@ jobs:
 
       - name: Install Newman and Reporter
         run: |
-          npm install  newman
-          npm install  newman-reporter-htmlextra
+          npm install newman newman-reporter-htmlextra
 
       - name: Run API Tests with Newman
         id: run-newman
         run: |
-          set -x
           echo "📌 Starting Newman test..."
           TIMESTAMP=$(date +'%Y-%m-%d-%H-%M-%S')
           REPORT_NAME="Postman-Report-${TIMESTAMP}.html"
           
-          set +e
-          # รัน Newman โดยชี้ไปที่ไฟล์ในโฟลเดอร์ postman-tests (ตามที่เห็นจาก path CMD ของคุณ)
-          newman run "postman-tests/AutomateTest_postman_collection.json" \
+          npx newman run "postman-tests/AutomateTest_postman_collection.json" \
             -e "postman-tests/reqres-api.postman_environment.json" \
             -r htmlextra \
-            --reporter-htmlextra-export "${REPORT_NAME}"
+            --reporter-htmlextra-export "$REPORT_NAME"
           
-          CODE=$?
-          set -e
-
-          echo "report_name=${REPORT_NAME}" >> $GITHUB_OUTPUT
-          echo "exit_code=${CODE}" >> $GITHUB_OUTPUT
-          exit 0
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+          echo "report_name=$REPORT_NAME" >> $GITHUB_OUTPUT
 
       - name: Upload Postman Report
         if: always()
@@ -53,7 +45,7 @@ jobs:
           path: ${{ steps.run-newman.outputs.report_name }}
 
       - name: Fail job if Newman failed
-        if: ${{ steps.run-newman.outputs.exit_code != '0' }}
+        if: always() && steps.run-newman.outputs.exit_code != '0'
         run: |
-          echo "❌ Newman tests failed. Failing the job."
+          echo "❌ Newman tests failed with exit code ${{ steps.run-newman.outputs.exit_code }}"
           exit 1
