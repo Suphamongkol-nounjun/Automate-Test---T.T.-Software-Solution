@@ -2,7 +2,11 @@
   "name": "playwright-tests",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+"scripts": {
+    "test:playwright": "playwright test",
+    "test:postman": "newman run ../postman-tests/AutomateTest_postman_collection.json -e ../postman-tests/reqres-api.postman_environment.json -r cli,htmlextra",
+    "update:sheets": "node ../update_sheets.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe.configure({ mode: 'serial' });
+test.describe.configure({ mode: 'parallel' });
 
 test.describe('Reqres API Automation (Playwright Version)', () => {
   let createdUserId = ''; 
@@ -22,6 +22,7 @@ test.describe('Reqres API Automation (Playwright Version)', () => {
     expect(response.status()).toBe(201);
 
     const responseBody = await response.json();
+    
     
     expect(responseBody.name).toBe("Suphamongkol Nounjun");
     expect(responseBody.job).toBe("Tester");
